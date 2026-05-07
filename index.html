@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Censo DIT</title>
+  <title>Censo DIT - SIGIS_FED</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <style>
@@ -13,10 +13,7 @@
     .container { margin-top: 2%; max-width: 900px; }
     .card { border-radius: 12px; overflow: hidden; }
     .btn-save { background-color: var(--primary-color) !important; width: 100%; height: 50px; font-weight: bold; font-size: 1.1rem; }
-    .btn-search { margin-top: 15px; }
     #loader { display: none; }
-    .input-field input:focus + label { color: var(--primary-color) !important; }
-    .input-field input:focus { border-bottom: 1px solid var(--primary-color) !important; box-shadow: 0 1px 0 0 var(--primary-color) !important; }
     .section-title { font-size: 0.9rem; font-weight: bold; color: var(--primary-color); text-transform: uppercase; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
   </style>
 </head>
@@ -26,7 +23,7 @@
   <div class="card z-depth-3">
     <div class="header-panel center-align">
       <h4 style="margin:0;"><i class="material-icons medium">assignment_ind</i> DESARROLLO INFANTIL</h4>
-      <p style="margin: 5px 0 0;">Censo DIT</p>
+      <p style="margin: 5px 0 0;">Censo DIT - Castillo Grande</p>
     </div>
     
     <div class="card-content">
@@ -34,12 +31,12 @@
         <div class="row">
           <div class="input-field col s12 m8">
             <i class="material-icons prefix">fingerprint</i>
-            <input id="dni" type="text" class="validate" required pattern="[0-9]{8}">
-            <label for="dni">DNI (Escriba para buscar o registrar)</label>
+            <input id="dni" type="text" class="validate" required pattern="[0-9]{8}" maxlength="8">
+            <label for="dni">DNI (8 dígitos)</label>
           </div>
           <div class="col s12 m4">
-            <button type="button" class="btn waves-effect waves-light blue darken-3 btn-search" onclick="buscarDNI()" style="width:100%">
-              <i class="material-icons left">search</i> Verificar DNI
+            <button type="button" class="btn waves-effect blue darken-3" onclick="buscarDNI()" style="width:100%; margin-top:15px;">
+              <i class="material-icons left">search</i> Verificar
             </button>
           </div>
         </div>
@@ -56,16 +53,15 @@
         <div class="row">
           <div class="input-field col s12 m4">
             <i class="material-icons prefix">event</i>
-            <input id="fn" type="text" class="validate" placeholder="DD/MM/YYYY" required>
+            <input id="fn" type="text" placeholder="DD/MM/YYYY" maxlength="10" required>
             <label for="fn" class="active">Fecha de Nacimiento</label>
           </div>
           <div class="input-field col s12 m4">
             <select id="sexo" required>
-              <option value="" disabled selected>Seleccione Sexo</option>
+              <option value="" disabled selected>Sexo</option>
               <option value="M">Masculino</option>
               <option value="F">Femenino</option>
             </select>
-            <label>Sexo</label>
           </div>
           <div class="input-field col s12 m4">
             <select id="estado_civil">
@@ -76,53 +72,83 @@
               <option value="VIUDO">Viudo/a</option>
               <option value="DIVORCIADO">Divorciado/a</option>
             </select>
-            <label>Estado Civil</label>
           </div>
         </div>
 
-        <div class="section-title">Información Administrativa</div>
+        <div class="section-title">Ubicación y Contacto</div>
         <div class="row">
-          <div class="input-field col s12 m6">
-            <i class="material-icons prefix">folder</i>
-            <input id="hclinica" type="text">
-            <label for="hclinica">Historia Clínica</label>
+          <div class="input-field col s12 m8">
+            <i class="material-icons prefix">map</i>
+            <input list="listaSectores" id="sector" type="text" placeholder="Escriba para buscar sector..." required>
+            <label for="sector" class="active">Sector</label>
+            <datalist id="listaSectores">
+              <option value="933-AA.VV. 25 DE ENERO"><option value="933-AA.VV. CARMEN GARAY">
+              <option value="933-AA.VV. FUNDO NUEVA ESPERANZA"><option value="933-AA.VV. LOS LAURELES">
+              <option value="933-AA.VV. PUEBLO LIBRE"><option value="933-AA.VV.01 DE MAYO">
+              <option value="933-AA.VV.01 DE SETIEMBRE"><option value="933-AA.VV.07 DE MAYO">
+              <option value="933-AA.VV.09 DE AGOSTO"><option value="933-AA.VV.15 DE AGOSTO">
+              <option value="933-AA.VV.CESAR VALLEJO"><option value="933-AA.VV.CIUDAD COLINA">
+              <option value="933-AA.VV.COLONIA TINGALESA"><option value="933-AA.VV.EDUARDO VILLASANTE">
+              <option value="933-AA.VV.JOSE CARLOS MARIATEGUI"><option value="933-AA.VV.JOSE OLAYA BALANDRA">
+              <option value="933-AA.VV.JUAN PICON QUEDO"><option value="933-AA.VV.JULIO MARTINEZ">
+              <option value="933-AA.VV.LAS ALMENDRAS"><option value="933-AA.VV.LAS AMAZONAS">
+              <option value="933-AA.VV.LAS PALMERAS"><option value="933-AA.VV.LOS ANGELES">
+              <option value="933-AA.VV.LOS JARDINES"><option value="933-AA.VV.LOS PINOS">
+              <option value="933-AA.VV.MARIA PARADO DE BELLIDO"><option value="933-AA.VV.MONTERRICO">
+              <option value="933-AA.VV.NUEVA ESPERANZA"><option value="933-AA.VV.NUEVA JERUSALEN">
+              <option value="933-AA.VV.NUEVO AMANECER"><option value="933-AA.VV.PADRES DE FAMILIA">
+              <option value="933-AA.VV.PANTOJA"><option value="933-AA.VV.PEDREGAL">
+              <option value="933-AA.VV.POBLADORES DE CASTILLO GRANDE"><option value="933-AA.VV.SAN CARLOS">
+              <option value="933-AA.VV.SAN ISIDRO"><option value="933-AA.VV.SAN MIGUEL">
+              <option value="933-AA.VV.SANTA ROSA"><option value="933-AA.VV.SOL NACIENTE">
+              <option value="933-COMUNIDAD ASERRADERO"><option value="933-COMUNIDAD CAPITAN SOTO">
+              <option value="933-COMUNIDAD HUANGANAPAMPA"><option value="933-COMUNIDAD HUAYNACAPAC">
+              <option value="933-COMUNIDAD JACINTILLO"><option value="933-COMUNIDAD LA CURVA">
+              <option value="933-COMUNIDAD LA FLORIDA"><option value="933-COMUNIDAD MANCO CAPAC">
+              <option value="933-COMUNIDAD MANTARO"><option value="933-COMUNIDAD MERCED DE LOCRO">
+              <option value="933-COMUNIDAD MOYANO"><option value="933-COMUNIDAD NUEVA ALTURA">
+              <option value="933-COMUNIDAD PACHACUTEC"><option value="933-COMUNIDAD PAPAYAL">
+              <option value="933-COMUNIDAD PICUROYACU"><option value="933-COMUNIDAD SANTA ROSA DE CASTILLA">
+              <option value="933-COMUNIDAD SHAMIRO"><option value="933-COMUNIDAD SINCHI ROCCA">
+              <option value="933-COMUNIDAD VENADO PAMPA"><option value="933-COMUNIDAD YURIMAGUAS">
+              <option value="933-SIN SECTOR">
+            </datalist>
           </div>
-          <div class="input-field col s12 m6">
-            <i class="material-icons prefix">description</i>
-            <input id="ffamiliar" type="text">
-            <label for="ffamiliar">Ficha Familiar</label>
+          <div class="input-field col s12 m4">
+            <input id="mz" type="text" pattern="[0-9]*" title="Solo números">
+            <label for="mz">Manzana (Solo números)</label>
           </div>
         </div>
 
         <div class="row">
           <div class="input-field col s12 m4">
             <i class="material-icons prefix">phone</i>
-            <input id="telefono" type="tel">
-            <label for="telefono">Teléfono</label>
+            <input id="telefono" type="text" pattern="[0-9]{1,9}" maxlength="9">
+            <label for="telefono">Celular (Máx 9 números)</label>
           </div>
-          <div class="input-field col s12 m4">
-            <input id="sector" type="text">
-            <label for="sector">Sector</label>
-          </div>
-          <div class="input-field col s12 m4">
-            <input id="mz" type="text">
-            <label for="mz">Manzana (MZ)</label>
+          <div class="input-field col s12 m8">
+            <input id="ref_direccion" type="text">
+            <label for="ref_direccion">Referencia de Dirección</label>
           </div>
         </div>
 
+        <div class="section-title">Historial</div>
         <div class="row">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">place</i>
-            <input id="ref_direccion" type="text">
-            <label for="ref_direccion">Referencia de Dirección</label>
+          <div class="input-field col s12 m6">
+            <input id="hclinica" type="text">
+            <label for="hclinica">Historia Clínica</label>
+          </div>
+          <div class="input-field col s12 m6">
+            <input id="ffamiliar" type="text">
+            <label for="ffamiliar">Ficha Familiar</label>
           </div>
         </div>
 
         <input type="hidden" id="rowNum" value="">
 
         <div class="center-align">
-          <button id="btnSubmit" class="btn waves-effect waves-light btn-save" type="submit">
-            <i class="material-icons right">cloud_upload</i> Guardar Datos
+          <button id="btnSubmit" class="btn waves-effect btn-save" type="submit">
+            <i class="material-icons right">cloud_upload</i> Guardar en SIGIS_FED
           </button>
         </div>
 
@@ -143,31 +169,42 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwi9h17o7YVZ7Zj0X9HhooM4ce-2kI6bYljI5ZN9Px7EVzzHLUyd7Owzdc3g_34oZ2IOg/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyUZovmsNawKbd-Xym-MFbl0gJF_8wl6qj2MDGy-QL-IsJGnYZNPrR7_ezTwl5NsAgPbg/exec";
 
   document.addEventListener('DOMContentLoaded', function() {
     M.AutoInit();
+    
+    // Máscara automática para Fecha DD/MM/YYYY
+    const fnInput = document.getElementById('fn');
+    fnInput.addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+      if (v.length >= 5) v = `${v.slice(0,2)}/${v.slice(2,4)}/${v.slice(4)}`;
+      else if (v.length >= 3) v = `${v.slice(0,2)}/${v.slice(2)}`;
+      e.target.value = v;
+    });
+
+    // Validación solo números para Manzana y Teléfono
+    ['mz', 'telefono'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+      });
+    });
   });
 
   async function buscarDNI() {
     const dni = document.getElementById('dni').value;
-    if(dni.length < 8) {
-      M.toast({html: 'Ingrese un DNI válido (8 dígitos)'});
-      return;
-    }
+    if(dni.length < 8) return M.toast({html: 'DNI incompleto'});
     
     document.getElementById('loader').style.display = 'block';
-    
     try {
       const response = await fetch(`${WEB_APP_URL}?action=buscar&dni=${dni}`);
       const data = await response.json();
-      
       document.getElementById('loader').style.display = 'none';
       
       if(data) {
         document.getElementById('rowNum').value = data.row;
         document.getElementById('nombreB').value = data.nombreB;
-        document.getElementById('fn').value = data.fn; // Recibe DD/MM/YYYY
+        document.getElementById('fn').value = data.fn;
         document.getElementById('sexo').value = data.sexo;
         document.getElementById('hclinica').value = data.hclinica;
         document.getElementById('ffamiliar').value = data.ffamiliar;
@@ -179,15 +216,14 @@
         
         M.updateTextFields();
         M.AutoInit(); 
-        M.toast({html: '✅ Registro encontrado'});
+        M.toast({html: '✅ Registro cargado'});
       } else {
-        M.toast({html: 'ℹ️ DNI no encontrado. Listo para nuevo registro.'});
+        M.toast({html: 'ℹ️ No encontrado. Registre nuevo.'});
         document.getElementById('rowNum').value = "";
-        document.getElementById('nombreB').value = "";
       }
     } catch (error) {
       document.getElementById('loader').style.display = 'none';
-      M.toast({html: '❌ Error al conectar con el servidor'});
+      M.toast({html: '❌ Error de red'});
     }
   }
 
@@ -200,7 +236,7 @@
       row: document.getElementById('rowNum').value,
       dni: document.getElementById('dni').value,
       nombreB: document.getElementById('nombreB').value.toUpperCase(),
-      fn: document.getElementById('fn').value, // Envía DD/MM/YYYY
+      fn: document.getElementById('fn').value,
       sexo: document.getElementById('sexo').value,
       hclinica: document.getElementById('hclinica').value,
       ffamiliar: document.getElementById('ffamiliar').value,
@@ -215,22 +251,20 @@
       await fetch(WEB_APP_URL, {
         method: 'POST',
         mode: 'no-cors',
-        cache: 'no-cache',
         body: JSON.stringify(data)
       });
 
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '🚀 Datos enviados al Excel con éxito'});
-      document.getElementById('pacienteForm').reset();
+      M.toast({html: '🚀 Guardado en Excel'});
+      this.reset();
       document.getElementById('rowNum').value = "";
       M.updateTextFields();
       M.AutoInit();
-      
     } catch (error) {
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '❌ Error en el envío'});
+      M.toast({html: '❌ Fallo al guardar'});
     }
   });
 </script>
