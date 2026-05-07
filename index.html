@@ -15,7 +15,6 @@
     .btn-save { background-color: var(--primary-color) !important; width: 100%; height: 50px; font-weight: bold; font-size: 1.1rem; }
     #loader { display: none; }
     .section-title { font-size: 0.9rem; font-weight: bold; color: var(--primary-color); text-transform: uppercase; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
-    /* Estilo para resaltar campos obligatorios vacíos */
     input.validate.invalid { border-bottom: 1px solid #ff5252 !important; box-shadow: 0 1px 0 0 #ff5252 !important; }
   </style>
 </head>
@@ -119,7 +118,7 @@
             </datalist>
           </div>
           <div class="input-field col s12 m4">
-            <input id="mz" type="text" pattern="[0-9]*" title="Solo números">
+            <input id="mz" type="text">
             <label for="mz">Manzana (Opcional)</label>
           </div>
         </div>
@@ -146,8 +145,8 @@
           </div>
           <div class="input-field col s12 m6">
             <i class="material-icons prefix">description</i>
-            <input id="ffamiliar" type="text" required class="validate">
-            <label for="ffamiliar">Ficha Familiar (Obligatorio)</label>
+            <input id="ffamiliar" type="text" maxlength="7" class="validate">
+            <label for="ffamiliar">Ficha Familiar (Máx 7 números - Opcional)</label>
           </div>
         </div>
 
@@ -181,7 +180,6 @@
   document.addEventListener('DOMContentLoaded', function() {
     M.AutoInit();
     
-    // Máscara automática para Fecha DD/MM/YYYY
     const fnInput = document.getElementById('fn');
     fnInput.addEventListener('input', function(e) {
       let v = e.target.value.replace(/\D/g, '').slice(0, 8);
@@ -190,8 +188,8 @@
       e.target.value = v;
     });
 
-    // Validación solo números para Manzana y Teléfono
-    ['mz', 'telefono'].forEach(id => {
+    // Validación solo números para Manzana, Teléfono y Ficha Familiar
+    ['mz', 'telefono', 'ffamiliar'].forEach(id => {
       document.getElementById(id).addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9]/g, '');
       });
@@ -237,7 +235,6 @@
   document.getElementById('pacienteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // Validación adicional para campos que Materialize a veces no captura con required
     if(!document.getElementById('sexo').value) {
         return M.toast({html: 'Seleccione el Sexo'});
     }
