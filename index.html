@@ -15,6 +15,8 @@
     .btn-save { background-color: var(--primary-color) !important; width: 100%; height: 50px; font-weight: bold; font-size: 1.1rem; }
     #loader { display: none; }
     .section-title { font-size: 0.9rem; font-weight: bold; color: var(--primary-color); text-transform: uppercase; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
+    /* Estilo para resaltar campos obligatorios vacíos */
+    input.validate.invalid { border-bottom: 1px solid #ff5252 !important; box-shadow: 0 1px 0 0 #ff5252 !important; }
   </style>
 </head>
 <body>
@@ -32,7 +34,7 @@
           <div class="input-field col s12 m8">
             <i class="material-icons prefix">fingerprint</i>
             <input id="dni" type="text" class="validate" required pattern="[0-9]{8}" maxlength="8">
-            <label for="dni">DNI (8 dígitos)</label>
+            <label for="dni">DNI (Obligatorio - 8 dígitos)</label>
           </div>
           <div class="col s12 m4">
             <button type="button" class="btn waves-effect blue darken-3" onclick="buscarDNI()" style="width:100%; margin-top:15px;">
@@ -46,15 +48,15 @@
           <div class="input-field col s12">
             <i class="material-icons prefix">person</i>
             <input id="nombreB" type="text" class="validate" required style="text-transform: uppercase;">
-            <label for="nombreB">Apellidos y Nombres Completos</label>
+            <label for="nombreB">Apellidos y Nombres Completos (Obligatorio)</label>
           </div>
         </div>
 
         <div class="row">
           <div class="input-field col s12 m4">
             <i class="material-icons prefix">event</i>
-            <input id="fn" type="text" placeholder="DD/MM/YYYY" maxlength="10" required>
-            <label for="fn" class="active">Fecha de Nacimiento</label>
+            <input id="fn" type="text" placeholder="DD/MM/YYYY" maxlength="10" required class="validate">
+            <label for="fn" class="active">Fecha de Nacimiento (Obligatorio)</label>
           </div>
           <div class="input-field col s12 m4">
             <select id="sexo" required>
@@ -62,6 +64,7 @@
               <option value="M">Masculino</option>
               <option value="F">Femenino</option>
             </select>
+            <label>Sexo (Obligatorio)</label>
           </div>
           <div class="input-field col s12 m4">
             <select id="estado_civil">
@@ -72,6 +75,7 @@
               <option value="VIUDO">Viudo/a</option>
               <option value="DIVORCIADO">Divorciado/a</option>
             </select>
+            <label>Estado Civil (Opcional)</label>
           </div>
         </div>
 
@@ -79,8 +83,8 @@
         <div class="row">
           <div class="input-field col s12 m8">
             <i class="material-icons prefix">map</i>
-            <input list="listaSectores" id="sector" type="text" placeholder="Escriba para buscar sector..." required>
-            <label for="sector" class="active">Sector</label>
+            <input list="listaSectores" id="sector" type="text" placeholder="Escriba para buscar sector..." required class="validate">
+            <label for="sector" class="active">Sector (Obligatorio)</label>
             <datalist id="listaSectores">
               <option value="933-AA.VV. 25 DE ENERO"><option value="933-AA.VV. CARMEN GARAY">
               <option value="933-AA.VV. FUNDO NUEVA ESPERANZA"><option value="933-AA.VV. LOS LAURELES">
@@ -116,31 +120,34 @@
           </div>
           <div class="input-field col s12 m4">
             <input id="mz" type="text" pattern="[0-9]*" title="Solo números">
-            <label for="mz">Manzana (Solo números)</label>
+            <label for="mz">Manzana (Opcional)</label>
           </div>
         </div>
 
         <div class="row">
           <div class="input-field col s12 m4">
             <i class="material-icons prefix">phone</i>
-            <input id="telefono" type="text" pattern="[0-9]{1,9}" maxlength="9">
-            <label for="telefono">Celular (Máx 9 números)</label>
+            <input id="telefono" type="text" pattern="[0-9]{9}" maxlength="9" required class="validate">
+            <label for="telefono">Celular (9 dígitos - Obligatorio)</label>
           </div>
           <div class="input-field col s12 m8">
-            <input id="ref_direccion" type="text">
-            <label for="ref_direccion">Referencia de Dirección</label>
+            <i class="material-icons prefix">place</i>
+            <input id="ref_direccion" type="text" required class="validate">
+            <label for="ref_direccion">Referencia de Dirección (Obligatorio)</label>
           </div>
         </div>
 
         <div class="section-title">Historial</div>
         <div class="row">
           <div class="input-field col s12 m6">
-            <input id="hclinica" type="text">
-            <label for="hclinica">Historia Clínica</label>
+            <i class="material-icons prefix">folder</i>
+            <input id="hclinica" type="text" required class="validate">
+            <label for="hclinica">Historia Clínica (Obligatorio)</label>
           </div>
           <div class="input-field col s12 m6">
-            <input id="ffamiliar" type="text">
-            <label for="ffamiliar">Ficha Familiar</label>
+            <i class="material-icons prefix">description</i>
+            <input id="ffamiliar" type="text" required class="validate">
+            <label for="ffamiliar">Ficha Familiar (Obligatorio)</label>
           </div>
         </div>
 
@@ -216,9 +223,9 @@
         
         M.updateTextFields();
         M.AutoInit(); 
-        M.toast({html: '✅ Verificar Datos y actualizar celular, domicilio,etc'});
+        M.toast({html: '✅ Verificar Datos y actualizar'});
       } else {
-        M.toast({html: 'ℹ️ Usuario Nuevo. Registre todo los datos.'});
+        M.toast({html: 'ℹ️ Usuario Nuevo. Registre todos los datos.'});
         document.getElementById('rowNum').value = "";
       }
     } catch (error) {
@@ -229,6 +236,12 @@
 
   document.getElementById('pacienteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // Validación adicional para campos que Materialize a veces no captura con required
+    if(!document.getElementById('sexo').value) {
+        return M.toast({html: 'Seleccione el Sexo'});
+    }
+
     document.getElementById('loader').style.display = 'block';
     document.getElementById('btnSubmit').disabled = true;
 
@@ -256,7 +269,7 @@
 
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '🚀 Okis'});
+      M.toast({html: '🚀 Guardado con éxito'});
       this.reset();
       document.getElementById('rowNum').value = "";
       M.updateTextFields();
