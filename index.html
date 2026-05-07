@@ -38,32 +38,25 @@
             <label for="dni">DNI (Escriba para buscar o registrar)</label>
           </div>
           <div class="col s12 m4">
-            <button type="button" class="btn waves-effect waves-light blue darken-3 btn-search" onclick="buscarDNI()">
+            <button type="button" class="btn waves-effect waves-light blue darken-3 btn-search" onclick="buscarDNI()" style="width:100%">
               <i class="material-icons left">search</i> Verificar DNI
             </button>
           </div>
         </div>
 
-        <div class="section-title">Datos Personales (Se unirán en Columna B)</div>
+        <div class="section-title">Datos Personales</div>
         <div class="row">
-          <div class="input-field col s12 m4">
-            <input id="apePaterno" type="text" class="validate" required>
-            <label for="apePaterno">Apellido Paterno</label>
-          </div>
-          <div class="input-field col s12 m4">
-            <input id="apeMaterno" type="text" class="validate" required>
-            <label for="apeMaterno">Apellido Materno</label>
-          </div>
-          <div class="input-field col s12 m4">
-            <input id="nombres" type="text" class="validate" required>
-            <label for="nombres">Nombres</label>
+          <div class="input-field col s12">
+            <i class="material-icons prefix">person</i>
+            <input id="nombreB" type="text" class="validate" required style="text-transform: uppercase;">
+            <label for="nombreB">Apellidos y Nombres Completos</label>
           </div>
         </div>
 
         <div class="row">
           <div class="input-field col s12 m4">
             <i class="material-icons prefix">event</i>
-            <input id="fn" type="date" class="validate" required>
+            <input id="fn" type="text" class="validate" placeholder="DD/MM/YYYY" required>
             <label for="fn" class="active">Fecha de Nacimiento</label>
           </div>
           <div class="input-field col s12 m4">
@@ -78,7 +71,7 @@
             <select id="estado_civil">
               <option value="" disabled selected>Estado Civil</option>
               <option value="SOLTERO">Soltero/a</option>
-                <option value="SOLTERO">Conviviente</option>
+              <option value="CONVIVIENTE">Conviviente</option>
               <option value="CASADO">Casado/a</option>
               <option value="VIUDO">Viudo/a</option>
               <option value="DIVORCIADO">Divorciado/a</option>
@@ -150,8 +143,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT (LA QUE TERMINA EN /exec)
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwcMJhghf8hJVk1GbqvwvZjuf3Eic1FFuZgkI_Oik9l-YdQNPwabGjoFt0QM2sUS6WlrQ/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwi9h17o7YVZ7Zj0X9HhooM4ce-2kI6bYljI5ZN9Px7EVzzHLUyd7Owzdc3g_34oZ2IOg/exec";
 
   document.addEventListener('DOMContentLoaded', function() {
     M.AutoInit();
@@ -167,7 +159,6 @@
     document.getElementById('loader').style.display = 'block';
     
     try {
-      // Llamada al doGet del Script con parámetro action=buscar
       const response = await fetch(`${WEB_APP_URL}?action=buscar&dni=${dni}`);
       const data = await response.json();
       
@@ -175,12 +166,8 @@
       
       if(data) {
         document.getElementById('rowNum').value = data.row;
-        // El nombre viene unido desde Columna B del Excel
-        document.getElementById('nombres').value = data.nombreCompleto;
-        document.getElementById('apePaterno').value = ""; 
-        document.getElementById('apeMaterno').value = "";
-        
-        document.getElementById('fn').value = data.fn;
+        document.getElementById('nombreB').value = data.nombreB;
+        document.getElementById('fn').value = data.fn; // Recibe DD/MM/YYYY
         document.getElementById('sexo').value = data.sexo;
         document.getElementById('hclinica').value = data.hclinica;
         document.getElementById('ffamiliar').value = data.ffamiliar;
@@ -196,7 +183,7 @@
       } else {
         M.toast({html: 'ℹ️ DNI no encontrado. Listo para nuevo registro.'});
         document.getElementById('rowNum').value = "";
-        document.getElementById('nombres').value = "";
+        document.getElementById('nombreB').value = "";
       }
     } catch (error) {
       document.getElementById('loader').style.display = 'none';
@@ -209,16 +196,11 @@
     document.getElementById('loader').style.display = 'block';
     document.getElementById('btnSubmit').disabled = true;
 
-    const nom = document.getElementById('nombres').value;
-    const pat = document.getElementById('apePaterno').value;
-    const mat = document.getElementById('apeMaterno').value;
-    const nombreUnido = `${pat} ${mat} ${nom}`.trim();
-
     const data = {
       row: document.getElementById('rowNum').value,
       dni: document.getElementById('dni').value,
-      nombreB: nombreUnido,
-      fn: document.getElementById('fn').value,
+      nombreB: document.getElementById('nombreB').value.toUpperCase(),
+      fn: document.getElementById('fn').value, // Envía DD/MM/YYYY
       sexo: document.getElementById('sexo').value,
       hclinica: document.getElementById('hclinica').value,
       ffamiliar: document.getElementById('ffamiliar').value,
@@ -230,22 +212,20 @@
     };
 
     try {
-      // Enviando datos al doPost del Script
       await fetch(WEB_APP_URL, {
         method: 'POST',
-        mode: 'no-cors', // Necesario para evitar bloqueos de seguridad desde GitHub
+        mode: 'no-cors',
         cache: 'no-cache',
         body: JSON.stringify(data)
       });
 
-      // Como usamos no-cors, el navegador no lee la respuesta de éxito, 
-      // pero el envío se realiza. Limpiamos manualmente.
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '🚀 Procesando datos en el Excel...'});
+      M.toast({html: '🚀 Datos enviados al Excel con éxito'});
       document.getElementById('pacienteForm').reset();
       document.getElementById('rowNum').value = "";
       M.updateTextFields();
+      M.AutoInit();
       
     } catch (error) {
       document.getElementById('loader').style.display = 'none';
