@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Censo DIT - SIGIS_FED</title>
+  <title>Censo DIT</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <style>
@@ -148,7 +148,7 @@
 
         <div class="center-align">
           <button id="btnSubmit" class="btn waves-effect btn-save" type="submit">
-            <i class="material-icons right">cloud_upload</i> Guardar en SIGIS_FED
+            <i class="material-icons right">cloud_upload</i> Guardar
           </button>
         </div>
 
@@ -216,9 +216,9 @@
         
         M.updateTextFields();
         M.AutoInit(); 
-        M.toast({html: '✅ Registro cargado'});
+        M.toast({html: '✅ Verificar Datos y actualizar celular, domicilio,etc'});
       } else {
-        M.toast({html: 'ℹ️ No encontrado. Registre nuevo.'});
+        M.toast({html: 'ℹ️ Usuario Nuevo. Registre todo los datos.'});
         document.getElementById('rowNum').value = "";
       }
     } catch (error) {
@@ -256,7 +256,7 @@
 
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '🚀 Guardado en Excel'});
+      M.toast({html: '🚀 Okis'});
       this.reset();
       document.getElementById('rowNum').value = "";
       M.updateTextFields();
