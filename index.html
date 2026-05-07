@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Salud - Registro</title>
-  <!-- Google Fonts & Materialize CSS -->
+  <title>Censo DIT</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <style>
@@ -26,13 +25,12 @@
 <div class="container">
   <div class="card z-depth-3">
     <div class="header-panel center-align">
-      <h4 style="margin:0;"><i class="material-icons medium">assignment_ind</i> REGISTRO SIGIS_FED</h4>
-      <p style="margin: 5px 0 0;">Gestión de Pacientes y Seguimiento de Salud</p>
+      <h4 style="margin:0;"><i class="material-icons medium">assignment_ind</i> DESARROLLO INFANTIL</h4>
+      <p style="margin: 5px 0 0;">Censo DIT</p>
     </div>
     
     <div class="card-content">
       <form id="pacienteForm">
-        <!-- BUSQUEDA POR DNI -->
         <div class="row">
           <div class="input-field col s12 m8">
             <i class="material-icons prefix">fingerprint</i>
@@ -46,7 +44,7 @@
           </div>
         </div>
 
-        <div class="section-title">Datos Personales (Columna B Unido)</div>
+        <div class="section-title">Datos Personales (Se unirán en Columna B)</div>
         <div class="row">
           <div class="input-field col s12 m4">
             <input id="apePaterno" type="text" class="validate" required>
@@ -80,6 +78,7 @@
             <select id="estado_civil">
               <option value="" disabled selected>Estado Civil</option>
               <option value="SOLTERO">Soltero/a</option>
+                <option value="SOLTERO">Conviviente</option>
               <option value="CASADO">Casado/a</option>
               <option value="VIUDO">Viudo/a</option>
               <option value="DIVORCIADO">Divorciado/a</option>
@@ -151,11 +150,14 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
+  // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT (LA QUE TERMINA EN /exec)
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwcMJhghf8hJVk1GbqvwvZjuf3Eic1FFuZgkI_Oik9l-YdQNPwabGjoFt0QM2sUS6WlrQ/exec";
+
   document.addEventListener('DOMContentLoaded', function() {
     M.AutoInit();
   });
 
-  function buscarDNI() {
+  async function buscarDNI() {
     const dni = document.getElementById('dni').value;
     if(dni.length < 8) {
       M.toast({html: 'Ingrese un DNI válido (8 dígitos)'});
@@ -163,13 +165,19 @@
     }
     
     document.getElementById('loader').style.display = 'block';
-    google.script.run.withSuccessHandler(function(data) {
+    
+    try {
+      // Llamada al doGet del Script con parámetro action=buscar
+      const response = await fetch(`${WEB_APP_URL}?action=buscar&dni=${dni}`);
+      const data = await response.json();
+      
       document.getElementById('loader').style.display = 'none';
+      
       if(data) {
         document.getElementById('rowNum').value = data.row;
-        // Asignamos datos (nombres ya viene unido en B, podrías intentar separarlos o dejar que el usuario edite)
+        // El nombre viene unido desde Columna B del Excel
         document.getElementById('nombres').value = data.nombreCompleto;
-        document.getElementById('apePaterno').value = ""; // Limpiar para re-ingreso o manejo manual
+        document.getElementById('apePaterno').value = ""; 
         document.getElementById('apeMaterno').value = "";
         
         document.getElementById('fn').value = data.fn;
@@ -183,16 +191,20 @@
         document.getElementById('mz').value = data.mz;
         
         M.updateTextFields();
-        M.AutoInit(); // Refresca selects
-        M.toast({html: 'Registro encontrado. Modo Edición activado.'});
+        M.AutoInit(); 
+        M.toast({html: '✅ Registro encontrado'});
       } else {
-        M.toast({html: 'DNI no encontrado. Listo para nuevo registro.'});
+        M.toast({html: 'ℹ️ DNI no encontrado. Listo para nuevo registro.'});
         document.getElementById('rowNum').value = "";
+        document.getElementById('nombres').value = "";
       }
-    }).obtenerPorDNI(dni);
+    } catch (error) {
+      document.getElementById('loader').style.display = 'none';
+      M.toast({html: '❌ Error al conectar con el servidor'});
+    }
   }
 
-  document.getElementById('pacienteForm').addEventListener('submit', function(e) {
+  document.getElementById('pacienteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     document.getElementById('loader').style.display = 'block';
     document.getElementById('btnSubmit').disabled = true;
@@ -200,8 +212,6 @@
     const nom = document.getElementById('nombres').value;
     const pat = document.getElementById('apePaterno').value;
     const mat = document.getElementById('apeMaterno').value;
-    
-    // Unir nombres para la columna B
     const nombreUnido = `${pat} ${mat} ${nom}`.trim();
 
     const data = {
@@ -219,13 +229,29 @@
       mz: document.getElementById('mz').value
     };
 
-    google.script.run.withSuccessHandler(function(res) {
+    try {
+      // Enviando datos al doPost del Script
+      await fetch(WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Necesario para evitar bloqueos de seguridad desde GitHub
+        cache: 'no-cache',
+        body: JSON.stringify(data)
+      });
+
+      // Como usamos no-cors, el navegador no lee la respuesta de éxito, 
+      // pero el envío se realiza. Limpiamos manualmente.
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: res});
+      M.toast({html: '🚀 Procesando datos en el Excel...'});
       document.getElementById('pacienteForm').reset();
       document.getElementById('rowNum').value = "";
-    }).guardarDatos(data);
+      M.updateTextFields();
+      
+    } catch (error) {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('btnSubmit').disabled = false;
+      M.toast({html: '❌ Error en el envío'});
+    }
   });
 </script>
 </body>
