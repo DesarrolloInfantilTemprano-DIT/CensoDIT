@@ -99,7 +99,7 @@
               <option value="933-AA.VV.LOS JARDINES"><option value="933-AA.VV.LOS PINOS">
               <option value="933-AA.VV.MARIA PARADO DE BELLIDO"><option value="933-AA.VV.MONTERRICO">
               <option value="933-AA.VV.NUEVA ESPERANZA"><option value="933-AA.VV.NUEVA JERUSALEN">
-              <option value="933-AA.VV.NUEVO AMANECER"><option value="933-AA.VV.PADRES DE FAMILIA">
+              <option value="933-AA.VV.NUEV AMANECER"><option value="933-AA.VV.PADRES DE FAMILIA">
               <option value="933-AA.VV.PANTOJA"><option value="933-AA.VV.PEDREGAL">
               <option value="933-AA.VV.POBLADORES DE CASTILLO GRANDE"><option value="933-AA.VV.SAN CARLOS">
               <option value="933-AA.VV.SAN ISIDRO"><option value="933-AA.VV.SAN MIGUEL">
@@ -206,7 +206,6 @@
       const data = await response.json();
       document.getElementById('loader').style.display = 'none';
       
-      // Valida basándose en el "status" enviado por el Apps Script
       if(data && data.status === "ok") {
         document.getElementById('rowNum').value = data.row || "";
         document.getElementById('nombreB').value = data.nombreB || "";
@@ -222,7 +221,6 @@
         
         M.updateTextFields();
         
-        // Redibuja los selectores de Materialize con los datos nuevos cargados
         var elems = document.querySelectorAll('select');
         M.FormSelect.init(elems);
 
@@ -230,7 +228,6 @@
       } else {
         M.toast({html: 'ℹ️ Usuario Nuevo. Registre todos los datos.'});
         
-        // Limpia el formulario viejo, pero mantiene el DNI digitado para no volverlo a escribir
         document.getElementById('rowNum').value = "";
         const dniActual = document.getElementById('dni').value;
         document.getElementById('pacienteForm').reset();
@@ -250,6 +247,17 @@
   document.getElementById('pacienteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
+    // --- NUEVA VALIDACIÓN DE SECTOR ESTRICTO ---
+    const sectorInput = document.getElementById('sector').value.trim();
+    const opcionesSector = Array.from(document.querySelectorAll('#listaSectores option')).map(opt => opt.value);
+    
+    if (!opcionesSector.includes(sectorInput)) {
+      M.toast({html: '❌ El Sector ingresado no es válido. Selecciónelo de la lista.'});
+      document.getElementById('sector').focus();
+      return; // Detiene el envío del formulario inmediatamente
+    }
+    // -------------------------------------------
+
     if(!document.getElementById('sexo').value) {
         return M.toast({html: '⚠️ Seleccione el Sexo (Obligatorio)'});
     }
@@ -267,7 +275,7 @@
       ffamiliar: document.getElementById('ffamiliar').value,
       telefono: document.getElementById('telefono').value,
       estado_civil: document.getElementById('estado_civil').value,
-      sector: document.getElementById('sector').value,
+      sector: sectorInput,
       ref_direccion: document.getElementById('ref_direccion').value,
       mz: document.getElementById('mz').value
     };
@@ -283,7 +291,6 @@
       document.getElementById('btnSubmit').disabled = false;
       M.toast({html: '🚀 Guardado con éxito en el Censo'});
       
-      // Limpieza post-envío
       this.reset();
       document.getElementById('rowNum').value = "";
       M.updateTextFields();
