@@ -103,7 +103,7 @@
               <option value="933-AA.VV.PANTOJA"><option value="933-AA.VV.PEDREGAL">
               <option value="933-AA.VV.POBLADORES DE CASTILLO GRANDE"><option value="933-AA.VV.SAN CARLOS">
               <option value="933-AA.VV.SAN ISIDRO"><option value="933-AA.VV.SAN MIGUEL">
-              <option value="933-AA.VV.SANTA ROSA"><option value="933-AA.VV.SOL NACIENTE">
+              <option value="933-AA.VV.SANTA ROSA"><option value="933-SOL NACIENTE">
               <option value="933-COMUNIDAD ASERRADERO"><option value="933-COMUNIDAD CAPITAN SOTO">
               <option value="933-COMUNIDAD HUANGANAPAMPA"><option value="933-COMUNIDAD HUAYNACAPAC">
               <option value="933-COMUNIDAD JACINTILLO"><option value="933-COMUNIDAD LA CURVA">
@@ -198,7 +198,7 @@
 
   async function buscarDNI() {
     const dni = document.getElementById('dni').value;
-    if(dni.length < 8) return M.toast({html: 'DNI incompleto'});
+    if(dni.length < 8) return M.toast({html: '⚠️ DNI incompleto'});
     
     document.getElementById('loader').style.display = 'block';
     try {
@@ -206,29 +206,44 @@
       const data = await response.json();
       document.getElementById('loader').style.display = 'none';
       
-      if(data) {
-        document.getElementById('rowNum').value = data.row;
-        document.getElementById('nombreB').value = data.nombreB;
-        document.getElementById('fn').value = data.fn;
-        document.getElementById('sexo').value = data.sexo;
-        document.getElementById('hclinica').value = data.hclinica;
-        document.getElementById('ffamiliar').value = data.ffamiliar;
-        document.getElementById('telefono').value = data.telefono;
-        document.getElementById('estado_civil').value = data.estado_civil;
-        document.getElementById('sector').value = data.sector;
-        document.getElementById('ref_direccion').value = data.ref_direccion;
-        document.getElementById('mz').value = data.mz;
+      // Valida basándose en el "status" enviado por el Apps Script
+      if(data && data.status === "ok") {
+        document.getElementById('rowNum').value = data.row || "";
+        document.getElementById('nombreB').value = data.nombreB || "";
+        document.getElementById('fn').value = data.fn || "";
+        document.getElementById('sexo').value = data.sexo || "";
+        document.getElementById('hclinica').value = data.hclinica || "";
+        document.getElementById('ffamiliar').value = data.ffamiliar || "";
+        document.getElementById('telefono').value = data.telefono || "";
+        document.getElementById('estado_civil').value = data.estado_civil || "";
+        document.getElementById('sector').value = data.sector || "";
+        document.getElementById('ref_direccion').value = data.ref_direccion || "";
+        document.getElementById('mz').value = data.mz || "";
         
         M.updateTextFields();
-        M.AutoInit(); 
-        M.toast({html: '✅ Verificar Datos y actualizar'});
+        
+        // Redibuja los selectores de Materialize con los datos nuevos cargados
+        var elems = document.querySelectorAll('select');
+        M.FormSelect.init(elems);
+
+        M.toast({html: '✅ Datos encontrados. Verifique y actualice.'});
       } else {
         M.toast({html: 'ℹ️ Usuario Nuevo. Registre todos los datos.'});
+        
+        // Limpia el formulario viejo, pero mantiene el DNI digitado para no volverlo a escribir
         document.getElementById('rowNum').value = "";
+        const dniActual = document.getElementById('dni').value;
+        document.getElementById('pacienteForm').reset();
+        document.getElementById('dni').value = dniActual;
+        
+        M.updateTextFields();
+        var elems = document.querySelectorAll('select');
+        M.FormSelect.init(elems);
       }
     } catch (error) {
       document.getElementById('loader').style.display = 'none';
-      M.toast({html: '❌ Error de red'});
+      M.toast({html: '❌ Error al conectar con el servidor'});
+      console.error(error);
     }
   }
 
@@ -236,7 +251,7 @@
     e.preventDefault();
     
     if(!document.getElementById('sexo').value) {
-        return M.toast({html: 'Seleccione el Sexo'});
+        return M.toast({html: '⚠️ Seleccione el Sexo (Obligatorio)'});
     }
 
     document.getElementById('loader').style.display = 'block';
@@ -266,15 +281,18 @@
 
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '🚀 Guardado con éxito'});
+      M.toast({html: '🚀 Guardado con éxito en el Censo'});
+      
+      // Limpieza post-envío
       this.reset();
       document.getElementById('rowNum').value = "";
       M.updateTextFields();
-      M.AutoInit();
+      var elems = document.querySelectorAll('select');
+      M.FormSelect.init(elems);
     } catch (error) {
       document.getElementById('loader').style.display = 'none';
       document.getElementById('btnSubmit').disabled = false;
-      M.toast({html: '❌ Fallo al guardar'});
+      M.toast({html: '❌ Fallo al guardar los datos'});
     }
   });
 </script>
