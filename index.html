@@ -7,7 +7,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <style>
-    :root { --primary-color: #00796b; --secondary-color: #004d40; }
+    :root { 
+      --primary-color: #00796b; 
+      --secondary-color: #004d40; 
+      --modal-header-color: #3f51b5; /* Azul similar a la imagen */
+    }
     body { background-color: #f0f4f4; color: #333; }
     .header-panel { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 25px; border-radius: 8px 8px 0 0; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .container { margin-top: 2%; max-width: 900px; }
@@ -16,6 +20,75 @@
     #loader { display: none; }
     .section-title { font-size: 0.9rem; font-weight: bold; color: var(--primary-color); text-transform: uppercase; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
     input.validate.invalid { border-bottom: 1px solid #ff5252 !important; box-shadow: 0 1px 0 0 #ff5252 !important; }
+
+    /* ESTILOS DEL MODAL DE SECTOR */
+    #modalSector {
+      border-radius: 12px;
+      max-height: 85%;
+      width: 90%;
+      max-width: 550px;
+    }
+    .modal-header-custom {
+      background-color: var(--modal-header-color);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .modal-header-custom .modal-close {
+      color: white;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .search-box-container {
+      padding: 15px 20px 5px 20px;
+    }
+    .search-input-field {
+      border: 2px solid #3f51b5 !important;
+      border-radius: 20px !important;
+      padding: 0 15px !important;
+      box-sizing: border-box !important;
+      height: 42px !important;
+      font-size: 0.95rem !important;
+      text-transform: uppercase;
+    }
+    .search-input-field:focus {
+      box-shadow: 0 0 5px rgba(63, 81, 181, 0.5) !important;
+    }
+    .sector-list {
+      max-height: 350px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0 10px;
+    }
+    .sector-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+      transition: background 0.2s;
+    }
+    .sector-item:hover {
+      background-color: #f1f3f9;
+    }
+    .sector-item i {
+      color: #3f51b5;
+      font-size: 1.1rem;
+    }
+    .modal-footer-custom {
+      padding: 10px 20px;
+      background-color: #f5f5f5;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -82,40 +155,9 @@
         <div class="row">
           <div class="input-field col s12 m8">
             <i class="material-icons prefix">map</i>
-            <input list="listaSectores" id="sector" type="text" placeholder="Escriba para buscar sector..." required class="validate">
+            <!-- CAMPO DE SECTOR MEJORADO CON INTERFAZ TIPO MODAL -->
+            <input id="sector" type="text" placeholder="Haga clic para seleccionar..." required class="validate" readonly onclick="abrirModalSector()">
             <label for="sector" class="active">Sector (Obligatorio)</label>
-            <datalist id="listaSectores">
-              <option value="933-AA.VV. 25 DE ENERO"><option value="933-AA.VV. CARMEN GARAY">
-              <option value="933-AA.VV. FUNDO NUEVA ESPERANZA"><option value="933-AA.VV. LOS LAURELES">
-              <option value="933-AA.VV. PUEBLO LIBRE"><option value="933-AA.VV.01 DE MAYO">
-              <option value="933-AA.VV.01 DE SETIEMBRE"><option value="933-AA.VV.07 DE MAYO">
-              <option value="933-AA.VV.09 DE AGOSTO"><option value="933-AA.VV.15 DE AGOSTO">
-              <option value="933-AA.VV.CESAR VALLEJO"><option value="933-AA.VV.CIUDAD COLINA">
-              <option value="933-AA.VV.COLONIA TINGALESA"><option value="933-AA.VV.EDUARDO VILLASANTE">
-              <option value="933-AA.VV.JOSE CARLOS MARIATEGUI"><option value="933-AA.VV.JOSE OLAYA BALANDRA">
-              <option value="933-AA.VV.JUAN PICON QUEDO"><option value="933-AA.VV.JULIO MARTINEZ">
-              <option value="933-AA.VV.LAS ALMENDRAS"><option value="933-AA.VV.LAS AMAZONAS">
-              <option value="933-AA.VV.LAS PALMERAS"><option value="933-AA.VV.LOS ANGELES">
-              <option value="933-AA.VV.LOS JARDINES"><option value="933-AA.VV.LOS PINOS">
-              <option value="933-AA.VV.MARIA PARADO DE BELLIDO"><option value="933-AA.VV.MONTERRICO">
-              <option value="933-AA.VV.NUEVA ESPERANZA"><option value="933-AA.VV.NUEVA JERUSALEN">
-              <option value="933-AA.VV.NUEV AMANECER"><option value="933-AA.VV.PADRES DE FAMILIA">
-              <option value="933-AA.VV.PANTOJA"><option value="933-AA.VV.PEDREGAL">
-              <option value="933-AA.VV.POBLADORES DE CASTILLO GRANDE"><option value="933-AA.VV.SAN CARLOS">
-              <option value="933-AA.VV.SAN ISIDRO"><option value="933-AA.VV.SAN MIGUEL">
-              <option value="933-AA.VV.SANTA ROSA"><option value="933-SOL NACIENTE">
-              <option value="933-COMUNIDAD ASERRADERO"><option value="933-COMUNIDAD CAPITAN SOTO">
-              <option value="933-COMUNIDAD HUANGANAPAMPA"><option value="933-COMUNIDAD HUAYNACAPAC">
-              <option value="933-COMUNIDAD JACINTILLO"><option value="933-COMUNIDAD LA CURVA">
-              <option value="933-COMUNIDAD LA FLORIDA"><option value="933-COMUNIDAD MANCO CAPAC">
-              <option value="933-COMUNIDAD MANTARO"><option value="933-COMUNIDAD MERCED DE LOCRO">
-              <option value="933-COMUNIDAD MOYANO"><option value="933-COMUNIDAD NUEVA ALTURA">
-              <option value="933-COMUNIDAD PACHACUTEC"><option value="933-COMUNIDAD PAPAYAL">
-              <option value="933-COMUNIDAD PICUROYACU"><option value="933-COMUNIDAD SANTA ROSA DE CASTILLA">
-              <option value="933-COMUNIDAD SHAMIRO"><option value="933-COMUNIDAD SINCHI ROCCA">
-              <option value="933-COMUNIDAD VENADO PAMPA"><option value="933-COMUNIDAD YURIMAGUAS">
-              <option value="933-SIN SECTOR"><option value="933-OTRO DISTRITO">
-            </datalist>
           </div>
           <div class="input-field col s12 m4">
             <input id="mz" type="text">
@@ -173,13 +215,63 @@
   </div>
 </div>
 
+<!-- MODAL PARA SELECCIÓN DE SECTOR -->
+<div id="modalSector" class="modal">
+  <div class="modal-header-custom">
+    <span><i class="material-icons left" style="font-size:1.2rem; vertical-align:middle;">location_on</i> Seleccionar Sector Registrado</span>
+    <i class="material-icons modal-close">close</i>
+  </div>
+  <div class="search-box-container">
+    <input type="text" id="inputBuscarSector" class="search-input-field" placeholder="ESCRIBA PARA BUSCAR SECTOR..." onkeyup="filtrarSectores()">
+  </div>
+  <div class="sector-list" id="listaSectoresContenedor">
+    <!-- Lista generada dinámicamente mediante JS -->
+  </div>
+  <div class="modal-footer-custom">
+    <a href="#!" class="modal-close btn-flat grey lighten-2 waves-effect" style="border-radius: 8px;">Cancelar</a>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwkYPuO13juZBjhs7wrxX0MEYy-hPeg0HyzjDJ9_Oy-Yq3Fih99wFAyI5xlbJ_u4rBX1g/exec";
 
+  // LISTADO COMPLETO DE SECTORES
+  const sectoresDisponibles = [
+    "933-AA.VV. 25 DE ENERO", "933-AA.VV. CARMEN GARAY", "933-AA.VV. FUNDO NUEVA ESPERANZA",
+    "933-AA.VV. LOS LAURELES", "933-AA.VV. PUEBLO LIBRE", "933-AA.VV.01 DE MAYO",
+    "933-AA.VV.01 DE SETIEMBRE", "933-AA.VV.07 DE MAYO", "933-AA.VV.09 DE AGOSTO",
+    "933-AA.VV.15 DE AGOSTO", "933-AA.VV.CESAR VALLEJO", "933-AA.VV.CIUDAD COLINA",
+    "933-AA.VV.COLONIA TINGALESA", "933-AA.VV.EDUARDO VILLASANTE", "933-AA.VV.JOSE CARLOS MARIATEGUI",
+    "933-AA.VV.JOSE OLAYA BALANDRA", "933-AA.VV.JUAN PICON QUEDO", "933-AA.VV.JULIO MARTINEZ",
+    "933-AA.VV.LAS ALMENDRAS", "933-AA.VV.LAS AMAZONAS", "933-AA.VV.LAS PALMERAS",
+    "933-AA.VV.LOS ANGELES", "933-AA.VV.LOS JARDINES", "933-AA.VV.LOS PINOS",
+    "933-AA.VV.MARIA PARADO DE BELLIDO", "933-AA.VV.MONTERRICO", "933-AA.VV.NUEVA ESPERANZA",
+    "933-AA.VV.NUEVA JERUSALEN", "933-AA.VV.NUEV AMANECER", "933-AA.VV.PADRES DE FAMILIA",
+    "933-AA.VV.PANTOJA", "933-AA.VV.PEDREGAL", "933-AA.VV.POBLADORES DE CASTILLO GRANDE",
+    "933-AA.VV.SAN CARLOS", "933-AA.VV.SAN ISIDRO", "933-AA.VV.SAN MIGUEL",
+    "933-AA.VV.SANTA ROSA", "933-SOL NACIENTE", "933-COMUNIDAD ASERRADERO",
+    "933-COMUNIDAD CAPITAN SOTO", "933-COMUNIDAD HUANGANAPAMPA", "933-COMUNIDAD HUAYNACAPAC",
+    "933-COMUNIDAD JACINTILLO", "933-COMUNIDAD LA CURVA", "933-COMUNIDAD LA FLORIDA",
+    "933-COMUNIDAD MANCO CAPAC", "933-COMUNIDAD MANTARO", "933-COMUNIDAD MERCED DE LOCRO",
+    "933-COMUNIDAD MOYANO", "933-COMUNIDAD NUEVA ALTURA", "933-COMUNIDAD PACHACUTEC",
+    "933-COMUNIDAD PAPAYAL", "933-COMUNIDAD PICUROYACU", "933-COMUNIDAD SANTA ROSA DE CASTILLA",
+    "933-COMUNIDAD SHAMIRO", "933-COMUNIDAD SINCHI ROCCA", "933-COMUNIDAD VENADO PAMPA",
+    "933-COMUNIDAD YURIMAGUAS", "933-SIN SECTOR", "933-OTRO DISTRITO"
+  ];
+
+  let modalSectorInstance = null;
+
   document.addEventListener('DOMContentLoaded', function() {
     M.AutoInit();
-    
+
+    // Inicializar Modal de Sector
+    const modalElem = document.getElementById('modalSector');
+    modalSectorInstance = M.Modal.init(modalElem, { dismissible: true });
+
+    // Cargar la lista inicial de sectores
+    cargarSectores(sectoresDisponibles);
+
     const fnInput = document.getElementById('fn');
     fnInput.addEventListener('input', function(e) {
       let v = e.target.value.replace(/\D/g, '').slice(0, 8);
@@ -200,6 +292,48 @@
       this.value = this.value.replace(/[^0-9/]/g, '');
     });
   });
+
+  // FUNCIONES PARA EL MODAL DE SECTOR
+  function cargarSectores(lista) {
+    const contenedor = document.getElementById('listaSectoresContenedor');
+    contenedor.innerHTML = '';
+    
+    if (lista.length === 0) {
+      contenedor.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No se encontraron resultados</div>';
+      return;
+    }
+
+    lista.forEach(sec => {
+      const item = document.createElement('div');
+      item.className = 'sector-item';
+      item.innerHTML = `<span>${sec}</span><i class="material-icons">chevron_right</i>`;
+      item.onclick = function() {
+        seleccionarSector(sec);
+      };
+      contenedor.appendChild(item);
+    });
+  }
+
+  function abrirModalSector() {
+    document.getElementById('inputBuscarSector').value = '';
+    cargarSectores(sectoresDisponibles);
+    modalSectorInstance.open();
+    setTimeout(() => {
+      document.getElementById('inputBuscarSector').focus();
+    }, 300);
+  }
+
+  function filtrarSectores() {
+    const texto = document.getElementById('inputBuscarSector').value.toUpperCase();
+    const filtrados = sectoresDisponibles.filter(sec => sec.toUpperCase().includes(texto));
+    cargarSectores(filtrados);
+  }
+
+  function seleccionarSector(valor) {
+    document.getElementById('sector').value = valor;
+    M.updateTextFields();
+    modalSectorInstance.close();
+  }
 
   async function buscarDNI() {
     const dni = document.getElementById('dni').value;
@@ -252,18 +386,13 @@
   document.getElementById('pacienteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // --- NUEVA VALIDACIÓN DE SECTOR ESTRICTO ---
     const sectorInput = document.getElementById('sector').value.trim();
-    const opcionesSector = Array.from(document.querySelectorAll('#listaSectores option')).map(opt => opt.value);
-    
-    if (!opcionesSector.includes(sectorInput)) {
-      M.toast({html: '❌ El Sector ingresado no es válido. Selecciónelo de la lista.'});
-      document.getElementById('sector').focus();
-      return; // Detiene el envío del formulario inmediatamente
+    if (!sectoresDisponibles.includes(sectorInput)) {
+      M.toast({html: '❌ Por favor, seleccione un Sector válido de la lista.'});
+      abrirModalSector();
+      return;
     }
-    // -------------------------------------------
 
-    // --- VALIDACIÓN DEL FORMATO DE TELÉFONO(S) ---
     const telVal = document.getElementById('telefono').value.trim();
     const telRegex = /^(\d{9}|\d{9}\/\d{9})$/;
     if (!telRegex.test(telVal)) {
@@ -271,7 +400,6 @@
       document.getElementById('telefono').focus();
       return;
     }
-    // ---------------------------------------------
 
     if(!document.getElementById('sexo').value) {
         return M.toast({html: '⚠️ Seleccione el Sexo (Obligatorio)'});
